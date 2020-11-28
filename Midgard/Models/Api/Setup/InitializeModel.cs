@@ -1,4 +1,4 @@
-﻿namespace Midgard.Models.Setup
+﻿namespace Midgard.Models.Api.Setup
 {
     public class InitializeModel
     {

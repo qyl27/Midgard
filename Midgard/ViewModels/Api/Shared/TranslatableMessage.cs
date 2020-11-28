@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Midgard.ViewModels.Shared
+namespace Midgard.ViewModels.Api.Shared
 {
     public class TranslatableMessage
     {

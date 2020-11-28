@@ -1,6 +1,6 @@
-﻿using Midgard.ViewModels.Shared;
+﻿using Midgard.ViewModels.Api.Shared;
 
-namespace Midgard.ViewModels.Setup
+namespace Midgard.ViewModels.Api.Setup
 {
     public class InitializeViewModel
     {

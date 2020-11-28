@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="BouncyCastle" Version="1.8.6.1" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="5.0.0" />
         <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.3" />
@@ -13,7 +14,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\Yggdrasil" />
+      <Folder Include="Models\Api" />
+      <Folder Include="ViewModels\Api" />
     </ItemGroup>
 
 </Project>

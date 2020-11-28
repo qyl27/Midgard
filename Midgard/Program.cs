@@ -1,9 +1,12 @@
 using System;
 using System.Net;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Midgard.Utilities;
+using NLog;
 using NLog.Web;
 
 namespace Midgard
@@ -17,10 +20,28 @@ namespace Midgard
         public static readonly Version Version = new(1, 0, 0, 0);
 
         #endregion
+
+        #region Data
+
+        internal static RSA RsaKey { get; set; }
+        internal static string RsaPublicKey { get; set; }
+
+        #endregion
         
         public static void Main(string[] args)
         {
+            var logger = LogManager.GetCurrentClassLogger();
+            if (RsaKey == null)
+            {
+                logger.Info($"Starting Midgard, Server version is {Version}.");
+                logger.Info($"Powered by {Author}.");
+                logger.Info("Loading RSA key pair. Please wait...");
+                Signature.Load();
+            }
+            
             CreateHostBuilder(args).Build().Run();
+
+            LogManager.Shutdown();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

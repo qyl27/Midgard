@@ -30,7 +30,23 @@ namespace Midgard.DbModels
         [Required]
         public Permission Permission { get; set; }
         
+        #region CoolDown
+        
+        [Required]
+        public int TryTimes { get; set; }
+
+        [Required]
+        public int CoolDownLevel { get; set; }
+        
+        [Required]
+        public DateTime CoolDownEndTime { get; set; }
+
+        #endregion
+        
         public virtual List<Profile> Profiles { get; set; }
+        
         public virtual List<Token> Tokens { get; set; }
+        
+        public virtual List<Skin> Skins { get; set; }
     }
 }

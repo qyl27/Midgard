@@ -14,16 +14,13 @@ namespace Midgard.DbModels
         [Required]
         [RegularExpression("^[a-zA-Z0-9_]")]
         public string Name { get; set; }
-
-        [Required]
-        public SkinModel SkinModel { get; set; }
-
-        public string Skin { get; set; }
-
-        public string Cape { get; set; }
         
         [Required]
         public bool IsSelected { get; set; }
+        
+        public virtual Skin Skin { get; set; }
+
+        public virtual Skin Cape { get; set; }
 
         public virtual User Owner { get; set; }
         

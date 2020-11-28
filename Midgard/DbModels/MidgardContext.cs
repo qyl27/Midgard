@@ -27,23 +27,32 @@ namespace Midgard.DbModels
             builder.Entity<User>().Property(u => u.PasswordSalt).HasComment("密码盐");
             builder.Entity<User>().Property(u => u.IsEmailVerified).HasComment("是否已经验证邮箱");
             builder.Entity<User>().Property(u => u.Permission).HasComment("权限");
+            builder.Entity<User>().Property(u => u.TryTimes).HasComment("自上次登录成功后的尝试次数");
+            builder.Entity<User>().Property(u => u.CoolDownLevel).HasComment("冷却等级");
+            builder.Entity<User>().Property(u => u.CoolDownEndTime).HasComment("冷却结束时间");
             builder.Entity<User>()
                 .HasMany(u => u.Profiles)
                 .WithOne(p => p.Owner);
             builder.Entity<User>()
                 .HasMany(u => u.Tokens)
                 .WithOne(t => t.BindUser);
+            builder.Entity<User>()
+                .HasMany(u => u.Skins)
+                .WithOne(s => s.Owner);
 
             builder.Entity<Profile>().HasComment("角色信息表");
             builder.Entity<Profile>().Property(p => p.Id).HasComment("角色ID");
             builder.Entity<Profile>().Property(p => p.Name).HasComment("角色名");
-            builder.Entity<Profile>().Property(p => p.SkinModel).HasComment("皮肤模型");
-            builder.Entity<Profile>().Property(p => p.Skin).HasComment("皮肤");
-            builder.Entity<Profile>().Property(p => p.Cape).HasComment("披风");
             builder.Entity<Profile>().Property(p => p.IsSelected).HasComment("是否已选择");
             builder.Entity<Profile>()
                 .HasOne(p => p.Owner)
                 .WithMany(u => u.Profiles);
+            builder.Entity<Profile>()
+                .HasOne(p => p.Skin)
+                .WithOne();
+            builder.Entity<Profile>()
+                .HasOne(p => p.Cape)
+                .WithOne();
 
             builder.Entity<Token>().HasComment("令牌信息表");
             builder.Entity<Token>().HasKey(t => new {t.AccessToken, t.ClientToken});
@@ -70,6 +79,15 @@ namespace Midgard.DbModels
             builder.Entity<Session>()
                 .HasOne(s => s.BindProfile)
                 .WithMany(p => p.ActiveSessions);
+            
+            builder.Entity<Skin>().HasComment("皮肤信息表");
+            builder.Entity<Skin>().Property(s => s.Id).HasComment("皮肤ID");
+            builder.Entity<Skin>().Property(s => s.Type).HasComment("皮肤类型");
+            builder.Entity<Skin>().Property(s => s.Model).HasComment("皮肤模型");
+            builder.Entity<Skin>().Property(s => s.Url).HasComment("皮肤地址");
+            builder.Entity<Skin>()
+                .HasOne(s => s.Owner)
+                .WithMany(u => u.Skins);
         }
     }
 }
