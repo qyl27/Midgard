@@ -60,7 +60,7 @@ namespace Midgard.Controllers.Yggdrasil
             Db.SaveChanges();
 
             var maxTryTimes = Config.GetSection("Yggdrasil:Security:MaxTryTimes").Get<int>();
-            if (user.TryTimes > maxTryTimes)
+            if (user.TryTimes >= maxTryTimes)
             {
                 user.TryTimes = 0;
                 user.CoolDownLevel++;

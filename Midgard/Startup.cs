@@ -39,7 +39,7 @@ namespace Midgard
             {
                 var connectionString = $"Server={Configuration["Database:IP"]};" +
                                        $"Port={Configuration["Database:Port"]};" +
-                                       $"Uid={Configuration["Database:Username"]};" +
+                                       $"Uid={Configuration["Database:User"]};" +
                                        $"Pwd={Configuration["Database:Password"]};" +
                                        $"DataBase={Configuration["Database:Name"]};";
                 option.UseLazyLoadingProxies()
@@ -92,15 +92,9 @@ namespace Midgard
                 };
             });
 
-            if (bool.TryParse(Configuration["General:Initialized"], out var isInitialized))
-            {
-                if (isInitialized)
-                {
-                    using var dbContext = app.ApplicationServices.CreateScope()
-                        .ServiceProvider.GetRequiredService<MidgardContext>();
-                    dbContext.Database.EnsureCreated();
-                }
-            }
+            using var dbContext = app.ApplicationServices.CreateScope()
+                .ServiceProvider.GetRequiredService<MidgardContext>();
+            dbContext.Database.EnsureCreated();
             
             app.UseStaticFiles();
             

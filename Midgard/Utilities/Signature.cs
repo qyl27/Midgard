@@ -67,7 +67,6 @@ namespace Midgard.Utilities
             var privateKey = rsa.ToXmlString(true);
             File.WriteAllText(path + @"\PrivateKey.xml", privateKey);
             var publicKey = rsa.ToXmlString(false);
-            File.WriteAllText(path + @"\PublicKey.xml", publicKey);
             var publicKeyJava = "-----BEGIN PUBLIC KEY-----" + PublicKeyToJavaFormat(publicKey) + "-----END PUBLIC KEY-----";
             File.WriteAllText(path + @"\PublicKey.key", publicKeyJava);
         }

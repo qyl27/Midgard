@@ -27,5 +27,9 @@ namespace Midgard.DbModels
         public virtual List<Token> BindTokens { get; set; }
         
         public virtual List<Session> ActiveSessions { get; set; }
+        
+        public Guid SkinId { get; set; }
+        
+        public Guid CapeId { get; set; }
     }
 }

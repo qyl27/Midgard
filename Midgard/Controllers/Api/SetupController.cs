@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Midgard.DbModels;
+using Midgard.Enumerates;
 using Midgard.Models.Api.Setup;
+using Midgard.Utilities;
 using Midgard.ViewModels.Api.Setup;
 
 namespace Midgard.Controllers.Api
@@ -31,18 +34,7 @@ namespace Midgard.Controllers.Api
         [Route("[action]")]
         public IActionResult IsInitialized()
         {
-            if (bool.TryParse(Config["General:Initialized"], out var isInitialized))
-            {
-                return new JsonResult(new InitializeViewModel
-                {
-                    Result = isInitialized
-                });
-            }
-            
-            return new JsonResult(new InitializeViewModel
-            {
-                Result = false
-            });
+            throw new NotImplementedException();
         }
     }
 }

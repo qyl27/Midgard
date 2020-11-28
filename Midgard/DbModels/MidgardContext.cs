@@ -49,10 +49,12 @@ namespace Midgard.DbModels
                 .WithMany(u => u.Profiles);
             builder.Entity<Profile>()
                 .HasOne(p => p.Skin)
-                .WithOne();
+                .WithOne()
+                .HasForeignKey<Profile>(p => p.SkinId);
             builder.Entity<Profile>()
                 .HasOne(p => p.Cape)
-                .WithOne();
+                .WithOne()
+                .HasForeignKey<Profile>(p => p.CapeId);
 
             builder.Entity<Token>().HasComment("令牌信息表");
             builder.Entity<Token>().HasKey(t => new {t.AccessToken, t.ClientToken});
