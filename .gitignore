@@ -344,3 +344,4 @@ logs/
 
 # Private Settings
 .settings/
+*.Development.*
