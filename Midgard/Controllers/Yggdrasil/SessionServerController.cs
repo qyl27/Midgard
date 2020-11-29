@@ -27,11 +27,6 @@ namespace Midgard.Controllers.Yggdrasil
         [Route("[action]")]
         public IActionResult Join([FromBody] JoinModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return StatusCode(403);
-            }
-
             var token = (from t in Db.Tokens
                 where t.AccessToken == model.AccessToken
                       && t.Status != TokenStatus.Invalid
@@ -39,14 +34,14 @@ namespace Midgard.Controllers.Yggdrasil
 
             if (token == null)
             {
-                return StatusCode(403, 
-                    new ErrorViewModel("ForbiddenOperationException", "Invalid token."));
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid token.")) { StatusCode = 403 };
             }
 
             if (token.BindProfile.Id != model.SelectedProfile)
             {
-                return StatusCode(403, 
-                    new ErrorViewModel("ForbiddenOperationException", "Invalid token."));
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid token.")) { StatusCode = 403 };
             }
 
             var expireTime = Config.GetSection("Yggdrasil:Sessions:ExpireTime").Get<int>();
@@ -67,11 +62,6 @@ namespace Midgard.Controllers.Yggdrasil
         [Route("[action]")]
         public IActionResult HasJoined([FromQuery] HasJoinedModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return StatusCode(403);
-            }
-
             var profile = (from p in Db.Profiles
                 where p.Name == model.Username
                 select p).FirstOrDefault();

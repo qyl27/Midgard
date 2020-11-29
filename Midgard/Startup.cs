@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using Midgard.DbModels;
 using Newtonsoft.Json;
 using NLog;
+using reCAPTCHA.AspNetCore;
 
 namespace Midgard
 {
@@ -34,6 +36,21 @@ namespace Midgard
                 forwarded.ForwardedHeaders = ForwardedHeaders.All;
             });
             
+            // Recaptcha config.
+            services.AddRecaptcha(recaptcha =>
+            {
+                recaptcha.Site = "www.recaptcha.net";
+            });
+            
+            services.AddRecaptcha(Configuration.GetSection("General:Security:Recaptcha"));
+
+            // Session config.
+            services.AddDistributedMemoryCache();
+            services.AddSession(option =>
+            {
+                option.Cookie.Name = "MidgardSession";
+            });
+            
             // Database config.
             services.AddDbContext<MidgardContext>(option =>
             {
@@ -55,7 +72,11 @@ namespace Midgard
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
             
             // Swagger.
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Midgard", Version = "v1"}); });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Midgard", Version = "v1"});
+                c.ResolveConflictingActions(resolver => resolver.FirstOrDefault());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,6 +120,8 @@ namespace Midgard
             app.UseStaticFiles();
             
             app.UseDefaultFiles();
+            
+            app.UseSession();
             
             app.UseRouting();
 

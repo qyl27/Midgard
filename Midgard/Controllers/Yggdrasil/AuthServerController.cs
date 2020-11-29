@@ -28,11 +28,6 @@ namespace Midgard.Controllers.Yggdrasil
         [Route("[action]")]
         public IActionResult Authenticate([FromBody] AuthenticateModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return StatusCode(403);
-            }
-
             #region Check cooldown and password.
 
             var isEnableNonEmailLogin = Config.GetSection("Yggdrasil:Features:NonEmailLogin").Get<bool>();
@@ -43,17 +38,15 @@ namespace Midgard.Controllers.Yggdrasil
                 select u).FirstOrDefault();
             if (user == null)
             {
-                return StatusCode(403, 
-                    new ErrorViewModel("ForbiddenOperationException", 
-                        "Invalid credentials. Invalid username or password."));
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid credentials. Invalid username or password.")) { StatusCode = 403 };
             }
 
             var now = DateTime.Now;
             if (user.CoolDownEndTime > now)
             {
-                return StatusCode(403, 
-                    new ErrorViewModel("ForbiddenOperationException", 
-                        "Invalid credentials. Invalid username or password."));
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid credentials. Invalid username or password.")) { StatusCode = 403 };
             }
 
             user.TryTimes++;
@@ -67,16 +60,14 @@ namespace Midgard.Controllers.Yggdrasil
                 user.CoolDownEndTime = now.AddMinutes(user.CoolDownLevel * user.CoolDownLevel * 5);
                 Db.SaveChanges();
                 
-                return StatusCode(403, 
-                    new ErrorViewModel("ForbiddenOperationException", 
-                        "Invalid credentials. Invalid username or password."));
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid credentials. Invalid username or password.")) { StatusCode = 403 };
             }
 
             if (user.Password != Passwords.Hash(model.Password, user.PasswordSalt))
             {
-                return StatusCode(403, 
-                    new ErrorViewModel("ForbiddenOperationException", 
-                        "Invalid credentials. Invalid username or password."));
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid credentials. Invalid username or password.")) { StatusCode = 403 };
             }
 
             user.TryTimes = 0;
@@ -136,11 +127,6 @@ namespace Midgard.Controllers.Yggdrasil
         [Route("[action]")]
         public IActionResult Refresh([FromBody] RefreshModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return StatusCode(403);
-            }
-
             #region Check tokens.
             
             var token = (from t in Db.Tokens
@@ -151,8 +137,8 @@ namespace Midgard.Controllers.Yggdrasil
             
             if (token == null)
             {
-                return StatusCode(403, 
-                    new ErrorViewModel("ForbiddenOperationException", "Invalid token."));
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid token.")) { StatusCode = 403 };
             }
 
             token.Status = TokenStatus.Invalid;
@@ -209,11 +195,6 @@ namespace Midgard.Controllers.Yggdrasil
         [Route("[action]")]
         public IActionResult Validate([FromBody] TokenModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return StatusCode(403);
-            }
-            
             var token = (from t in Db.Tokens
                 where t.AccessToken == model.AccessToken
                       && (string.IsNullOrWhiteSpace(model.ClientToken) || model.ClientToken == t.ClientToken)
@@ -223,8 +204,8 @@ namespace Midgard.Controllers.Yggdrasil
             if (token == null
                 || token.Status == TokenStatus.Invalid)
             {
-                return StatusCode(403, 
-                    new ErrorViewModel("ForbiddenOperationException", "Invalid token."));
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid token.")) { StatusCode = 403 };
             }
 
             return NoContent();
@@ -234,11 +215,6 @@ namespace Midgard.Controllers.Yggdrasil
         [Route("[action]")]
         public IActionResult Invalidate([FromBody] TokenModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return StatusCode(403);
-            }
-
             var tokens = from t in Db.Tokens
                 where t.AccessToken == model.AccessToken
                       && (string.IsNullOrWhiteSpace(model.ClientToken) || model.ClientToken == t.ClientToken)
@@ -259,11 +235,6 @@ namespace Midgard.Controllers.Yggdrasil
         [Route("[action]")]
         public IActionResult Signout([FromBody] NamePassModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return StatusCode(403);
-            }
-
             #region Check cooldown and password.
 
             var isEnableNonEmailLogin = Config.GetSection("Yggdrasil:Features:NonEmailLogin").Get<bool>();
@@ -274,17 +245,15 @@ namespace Midgard.Controllers.Yggdrasil
                 select u).FirstOrDefault();
             if (user == null)
             {
-                return StatusCode(403, 
-                    new ErrorViewModel("ForbiddenOperationException", 
-                        "Invalid credentials. Invalid username or password."));
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid credentials. Invalid username or password.")) { StatusCode = 403 };
             }
 
             var now = DateTime.Now;
             if (user.CoolDownEndTime > now)
             {
-                return StatusCode(403, 
-                    new ErrorViewModel("ForbiddenOperationException", 
-                        "Invalid credentials. Invalid username or password."));
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid credentials. Invalid username or password.")) { StatusCode = 403 };
             }
 
             user.TryTimes++;
@@ -298,16 +267,14 @@ namespace Midgard.Controllers.Yggdrasil
                 user.CoolDownEndTime = now.AddMinutes(user.CoolDownLevel * user.CoolDownLevel * 5);
                 Db.SaveChanges();
                 
-                return StatusCode(403, 
-                    new ErrorViewModel("ForbiddenOperationException", 
-                        "Invalid credentials. Invalid username or password."));
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid credentials. Invalid username or password.")) { StatusCode = 403 };
             }
 
             if (user.Password != Passwords.Hash(model.Password, user.PasswordSalt))
             {
-                return StatusCode(403, 
-                    new ErrorViewModel("ForbiddenOperationException", 
-                        "Invalid credentials. Invalid username or password."));
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid credentials. Invalid username or password.")) { StatusCode = 403 };
             }
 
             user.TryTimes = 0;

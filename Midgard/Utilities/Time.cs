@@ -9,5 +9,10 @@ namespace Midgard.Utilities
             TimeSpan ts = time.ToUniversalTime() - new DateTime(1970, 1, 1);
             return (long)ts.TotalSeconds;
         }
+
+        public static string GetSaltByTime(DateTime time)
+        {
+            return time.ToString("yyyyMMddHHmmss");
+        }
     }
 }

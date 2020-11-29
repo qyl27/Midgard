@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Midgard.DbModels;
-using Midgard.Enumerates;
 using Midgard.Models.Api.Setup;
-using Midgard.Utilities;
-using Midgard.ViewModels.Api.Setup;
 
 namespace Midgard.Controllers.Api
 {
@@ -24,14 +20,14 @@ namespace Midgard.Controllers.Api
         }
 
         [HttpPost]
-        [Route("[action]")]
+        // [Route("[action]")]
         public IActionResult Initialize([FromBody] InitializeModel model)
         {
             throw new NotImplementedException();
         }
 
         [HttpGet]
-        [Route("[action]")]
+        // [Route("[action]")]
         public IActionResult IsInitialized()
         {
             throw new NotImplementedException();
