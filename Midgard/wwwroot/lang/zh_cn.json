@@ -2,5 +2,11 @@
   "message.fatal.recaptcha_failed": "验证码校验失败！",
   "message.fatal.username_or_email_exists": "用户名或邮箱已被注册！",
   "message.error.user_exists": "用户名已被注册。",
-  "message.error.email_exists": "邮箱已被注册。"
+  "message.error.email_exists": "邮箱已被注册。",
+  "message.error.user_not_exists": "用户不存在。",
+  "message.error.wrong_password": "密码错误。",
+  "message.error.already_logged": "此浏览器上已经登录了一个用户。",
+  "message.error.profile_exists": "角色名已被注册。",
+  "message.error.not_logged": "还没有登录。",
+  "message.error.profile_limit_reached": "角色数量达到上限。"
 }

@@ -38,7 +38,7 @@ namespace Midgard.Controllers.Yggdrasil
                     "Invalid token.")) { StatusCode = 403 };
             }
 
-            if (token.BindProfile.Id != model.SelectedProfile)
+            if (token.BindProfile?.Id != model.SelectedProfile)
             {
                 return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
                     "Invalid token.")) { StatusCode = 403 };

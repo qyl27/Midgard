@@ -84,8 +84,9 @@ namespace Midgard.Controllers.Yggdrasil
 
             var result = new AuthenticateViewModel
             {
-                AccessToken = accessToken,
-                ClientToken = clientToken
+                AccessToken = accessToken.ToString("N"),
+                ClientToken = clientToken, 
+                AvailableProfiles = new()
             };
 
             if (model.RequestUser)
@@ -128,12 +129,9 @@ namespace Midgard.Controllers.Yggdrasil
         public IActionResult Refresh([FromBody] RefreshModel model)
         {
             #region Check tokens.
-            
-            var token = (from t in Db.Tokens
-                where t.AccessToken == model.AccessToken
-                      && (string.IsNullOrWhiteSpace(model.ClientToken) || model.ClientToken == t.ClientToken)
-                      && t.Status != TokenStatus.Invalid
-                select t).FirstOrDefault();
+
+            var token = Db.Tokens
+                .FirstOrDefault(t => t.AccessToken == model.AccessToken && t.Status != TokenStatus.Invalid);
             
             if (token == null)
             {
@@ -141,7 +139,33 @@ namespace Midgard.Controllers.Yggdrasil
                     "Invalid token.")) { StatusCode = 403 };
             }
 
+            if (!string.IsNullOrWhiteSpace(model.ClientToken))
+            {
+                if (token.ClientToken != model.ClientToken)
+                {
+                    return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                        "Invalid token.")) { StatusCode = 403 };
+                }
+            }
+
+            if (token.BindProfile != null && model.SelectedProfile != null)
+            {
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Access token already has a profile assigned.")) { StatusCode = 403 };
+            }
+
             token.Status = TokenStatus.Invalid;
+            Db.SaveChanges();
+
+            #endregion
+
+            #region Delete invalid tokens.
+
+            var invalidTokens = Db.Tokens.Where(t => t.Status == TokenStatus.Invalid);
+            foreach (var t in invalidTokens)
+            {
+                Db.Tokens.Remove(t);
+            }
             Db.SaveChanges();
 
             #endregion
@@ -154,7 +178,7 @@ namespace Midgard.Controllers.Yggdrasil
             
             var result = new RefreshViewModel()
             {
-                AccessToken = accessToken,
+                AccessToken = accessToken.ToString("N"),
                 ClientToken = clientToken
             };
 
@@ -165,13 +189,22 @@ namespace Midgard.Controllers.Yggdrasil
             
             result.SelectedProfile = model.SelectedProfile;
 
-            Profile profile = null;
-            if (!Guid.TryParse(model.SelectedProfile.Id, out var profileId))
+            var guidParseResult = Guid.TryParse(model.SelectedProfile.Id, out var profileId);
+            if (!guidParseResult)
             {
-                profile = (from p in Db.Profiles
-                    where p.Id == profileId
-                    select p).FirstOrDefault();
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid token.")) { StatusCode = 403 };
             }
+            var profile = (from p in Db.Profiles
+                where p.Id == profileId
+                select p).FirstOrDefault();
+            if (profile is null)
+            {
+                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                    "Invalid token.")) { StatusCode = 403 };
+            }
+
+            profile.IsSelected = true;
 
             var tokenExpireDays = Config.GetSection("Yggdrasil:Security:TokenExpireDays").Get<int>();
             Db.Tokens.Add(new Token()

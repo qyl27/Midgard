@@ -18,6 +18,8 @@ namespace Midgard.Controllers.Api
     [Route("Api/[controller]")]
     public class AuthController : ControllerBase
     {
+        public static readonly string SessionKey = "LoggedUserId";
+        
         private IConfiguration Config { get; }
         private MidgardContext Db { get; }
         private IRecaptchaService Recaptcha { get; }
@@ -33,7 +35,23 @@ namespace Midgard.Controllers.Api
         [Route("[action]")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            // Todo: Uncomment recaptcha verify.
+            var uid = HttpContext.Session.GetString(SessionKey);
+            if (!string.IsNullOrWhiteSpace(uid))
+            {
+                var u = Db.Users.FirstOrDefault(u => u.Id == Guid.Parse(uid));
+                if (u is not null)
+                {
+                    return new JsonResult(new ErrorViewModel()
+                    {
+                        Message = new()
+                        {
+                            Message = "message.error.already_logged"
+                        }
+                    }) {StatusCode = 403};
+                }
+            }
+            
+            //Todo: Uncomment recaptcha verify.
             // var recaptcha = await Recaptcha.Validate(model.Recaptcha);
             // if (!recaptcha.success)
             // {
@@ -43,10 +61,7 @@ namespace Midgard.Controllers.Api
             //         {
             //             Message = "message.fatal.recaptcha_failed"
             //         }
-            //     })
-            //     {
-            //         StatusCode = 403
-            //     };
+            //     }) {StatusCode = 403};
             // }
 
             var isExists = Db.Users.Any(u => u.Username == model.Username || u.Email == model.Email);
@@ -58,10 +73,7 @@ namespace Midgard.Controllers.Api
                     {
                         Message = "message.fatal.username_or_email_exists"
                     }
-                })
-                {
-                    StatusCode = 403
-                };
+                }) {StatusCode = 403};
             }
 
             var now = DateTime.Now;
@@ -85,9 +97,90 @@ namespace Midgard.Controllers.Api
             await Db.Users.AddAsync(user);
             await Db.SaveChangesAsync();
             
-            HttpContext.Session.SetString("LoggedUserId", user.Id.ToString("N"));
+            HttpContext.Session.SetString(SessionKey, user.Id.ToString("N"));
 
             return new JsonResult(new BoolViewModel(true));
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult Login([FromBody] LoginModel model)
+        {
+            var uid = HttpContext.Session.GetString(SessionKey);
+            if (!string.IsNullOrWhiteSpace(uid))
+            {
+                var u = Db.Users.FirstOrDefault(u => u.Id == Guid.Parse(uid));
+                if (u is not null)
+                {
+                    return new JsonResult(new ErrorViewModel()
+                    {
+                        Message = new()
+                        {
+                            Message = "message.error.already_logged"
+                        }
+                    }) {StatusCode = 403};
+                }
+            }
+            
+            // Todo: Uncomment recaptcha verify.
+            // var recaptcha = await Recaptcha.Validate(model.Recaptcha);
+            // if (!recaptcha.success)
+            // {
+            //     return new JsonResult(new ErrorViewModel()
+            //     {
+            //         Message = new()
+            //         {
+            //             Message = "message.fatal.recaptcha_failed"
+            //         }
+            //     }) {StatusCode = 403};
+            // }
+
+            var isUsingEmail = model.Username.Contains("@");
+            var user = Db.Users.FirstOrDefault(u =>
+                isUsingEmail ? u.Email == model.Username : u.Username == model.Username);
+
+            if (user is null)
+            {
+                return new JsonResult(new ErrorViewModel()
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.user_not_exists"
+                    }
+                }) {StatusCode = 403};
+            }
+
+            if (user.Password != Passwords.Hash(model.Password, user.PasswordSalt))
+            {
+                return new JsonResult(new ErrorViewModel()
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.wrong_password"
+                    }
+                }) {StatusCode = 403};
+            }
+            
+            HttpContext.Session.SetString(SessionKey, user.Id.ToString("N"));
+
+            return new JsonResult(new BoolViewModel(true));
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public IActionResult HasLogged()
+        {
+            var uid = HttpContext.Session.GetString(SessionKey);
+            if (!string.IsNullOrWhiteSpace(uid))
+            {
+                var u = Db.Users.FirstOrDefault(u => u.Id == Guid.Parse(uid));
+                if (u is not null)
+                {
+                    return new JsonResult(new BoolViewModel(true));
+                }
+            }
+
+            return new JsonResult(new BoolViewModel(false));
         }
 
         [HttpGet]

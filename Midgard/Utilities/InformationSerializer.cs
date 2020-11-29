@@ -27,36 +27,34 @@ namespace Midgard.Utilities
         }
 
         public static ProfileInformationModel ProfileSerializer(Profile profile, 
-            Skin skin = null, Skin cape = null, bool sign = false)
+            Skin skin = null, Cape cape = null, bool sign = false)
         {
             var result = new ProfileInformationModel
             {
                 Id = profile.Id.ToString("N"),
                 Name = profile.Name
             };
-
+            
+            result.Properties = new();
             if (skin != null || cape != null)
             {
                 var texture = TextureSerializer(profile, skin, cape);
                 var json = JsonConvert.SerializeObject(texture);
                 var bytes = Encoding.UTF8.GetBytes(json);
                 var base64 = Convert.ToBase64String(bytes);
-
-                result.Properties = new List<PropertyModel>
+                
+                result.Properties.Add(new()
                 {
-                    new()
-                    {
-                        Name = "textures",
-                        Value = base64,
-                        Signature = sign ? Signature.Sign(json) : null
-                    }
-                };
+                    Name = "textures",
+                    Value = base64,
+                    Signature = sign ? Signature.Sign(json) : null
+                });
             }
-            
+
             return result;
         }
         
-        public static TextureInformation TextureSerializer(Profile profile, Skin skin = null, Skin cape = null)
+        public static TextureInformation TextureSerializer(Profile profile, Skin skin = null, Cape cape = null)
         {
             var result = new TextureInformation
             {

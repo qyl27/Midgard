@@ -40,7 +40,7 @@ namespace Midgard.Controllers.Yggdrasil
                         Register = Config["Yggdrasil:Pages:Register"], 
                         Manage = Config["Yggdrasil:Pages:Manage"]
                     }, 
-                    FeatureNonEmailLogin = Config.GetSection("Yggdrasil:Features:NonMailLogin").Get<bool>()
+                    FeatureNonEmailLogin = Config.GetSection("Yggdrasil:Features:NonEmailLogin").Get<bool>()
                 } 
             };
 

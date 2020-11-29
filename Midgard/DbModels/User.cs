@@ -12,7 +12,7 @@ namespace Midgard.DbModels
         public Guid Id { get; set; }
         
         [Required]
-        [RegularExpression("^[a-zA-Z0-9_]")]
+        [RegularExpression("[a-zA-Z0-9_]*")]
         public string Username { get; set; }
         
         [EmailAddress]
