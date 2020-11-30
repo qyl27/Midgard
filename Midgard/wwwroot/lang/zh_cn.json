@@ -8,5 +8,9 @@
   "message.error.already_logged": "此浏览器上已经登录了一个用户。",
   "message.error.profile_exists": "角色名已被注册。",
   "message.error.not_logged": "还没有登录。",
-  "message.error.profile_limit_reached": "角色数量达到上限。"
+  "message.error.profile_limit_reached": "用户角色数量达到上限。",
+  "message.error.profile_not_exists": "角色不存在。",
+  "message.error.skin_not_exists": "皮肤不存在。",
+  "message.error.cape_not_exists": "披风不存在。",
+  "message.error.texture_too_big": "上传的材质太大了。"
 }

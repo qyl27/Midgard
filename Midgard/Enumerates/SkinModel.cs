@@ -3,7 +3,6 @@
     public enum SkinModel
     {
         Default = 1, 
-        Slim = 2, 
-        Cape = 3
+        Slim = 2
     }
 }

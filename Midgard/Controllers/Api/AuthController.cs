@@ -99,7 +99,7 @@ namespace Midgard.Controllers.Api
             
             HttpContext.Session.SetString(SessionKey, user.Id.ToString("N"));
 
-            return new JsonResult(new BoolViewModel(true));
+            return NoContent();
         }
 
         [HttpPost]
@@ -163,7 +163,7 @@ namespace Midgard.Controllers.Api
             
             HttpContext.Session.SetString(SessionKey, user.Id.ToString("N"));
 
-            return new JsonResult(new BoolViewModel(true));
+            return NoContent();
         }
 
         [HttpGet]
@@ -176,11 +176,11 @@ namespace Midgard.Controllers.Api
                 var u = Db.Users.FirstOrDefault(u => u.Id == Guid.Parse(uid));
                 if (u is not null)
                 {
-                    return new JsonResult(new BoolViewModel(true));
+                    return NoContent();
                 }
             }
 
-            return new JsonResult(new BoolViewModel(false));
+            return StatusCode(401);
         }
 
         [HttpGet]

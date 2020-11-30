@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Midgard.DbModels;
 using Midgard.Models.Api.Profile;
@@ -83,11 +81,14 @@ namespace Midgard.Controllers.Api
                 }) {StatusCode = 403};
             }
 
-            #region Do add profile.
+            #region Do create profile.
 
+            var isOfflineUuid = Config.GetSection("Yggdrasil:Features:OfflineUuid").Get<bool>();
+            var uuid = isOfflineUuid ? Uuid.GetOfflinePlayerUuid(model.Name) : Guid.NewGuid();
+            
             user.Profiles.Add(new Profile
             {
-                Id = Uuid.GetOfflinePlayerUuid(model.Name), 
+                Id = uuid, 
                 Name = model.Name, 
                 IsSelected = false, 
                 Owner = user
@@ -96,7 +97,297 @@ namespace Midgard.Controllers.Api
 
             #endregion
 
-            return new JsonResult(new BoolViewModel(true));
+            return NoContent();
+        }
+
+        [HttpPut]
+        [Route("[action]/{profileId}/{skinId}")]
+        public IActionResult Skin([FromRoute] Guid profileId, [FromRoute] Guid skinId)
+        {
+            #region Check sessions.
+
+            var uid = HttpContext.Session.GetString(AuthController.SessionKey);
+            if (string.IsNullOrWhiteSpace(uid))
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.not_logged"
+                    }
+                }) {StatusCode = 401};
+            }
+            var user = Db.Users.FirstOrDefault(u => u.Id == Guid.Parse(uid));
+            if (user is null)
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.not_logged"
+                    }
+                }) {StatusCode = 401};
+            }
+
+            #endregion
+
+            var profile = user.Profiles.FirstOrDefault(p => p.Id == profileId);
+            if (profile is null)
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.profile_not_exists"
+                    }
+                }) {StatusCode = 403};
+            }
+
+            var skin = Db.Skins.FirstOrDefault(s => s.Id == skinId);
+            if (skin is null)
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.skin_not_exists"
+                    }
+                }) {StatusCode = 403};
+            }
+
+            #region Do attach skin.
+
+            profile.Skin = skin;
+            Db.SaveChanges();
+
+            #endregion
+
+            return NoContent();
+        }
+        
+        
+        [HttpDelete]
+        [Route("[action]/{profileId}")]
+        public IActionResult Skin([FromRoute] Guid profileId)
+        {
+            #region Check sessions.
+
+            var uid = HttpContext.Session.GetString(AuthController.SessionKey);
+            if (string.IsNullOrWhiteSpace(uid))
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.not_logged"
+                    }
+                }) {StatusCode = 401};
+            }
+            var user = Db.Users.FirstOrDefault(u => u.Id == Guid.Parse(uid));
+            if (user is null)
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.not_logged"
+                    }
+                }) {StatusCode = 401};
+            }
+
+            #endregion
+
+            var profile = user.Profiles.FirstOrDefault(p => p.Id == profileId);
+            if (profile is null)
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.profile_not_exists"
+                    }
+                }) {StatusCode = 403};
+            }
+
+            #region Do delete skin.
+
+            profile.Skin = null;
+            Db.SaveChanges();
+
+            #endregion
+
+            return NoContent();
+        }
+        
+        
+        [HttpPut]
+        [Route("[action]/{profileId}/{capeId}")]
+        public IActionResult Cape([FromRoute] Guid profileId, [FromRoute] Guid capeId)
+        {
+            #region Check sessions.
+
+            var uid = HttpContext.Session.GetString(AuthController.SessionKey);
+            if (string.IsNullOrWhiteSpace(uid))
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.not_logged"
+                    }
+                }) {StatusCode = 401};
+            }
+            var user = Db.Users.FirstOrDefault(u => u.Id == Guid.Parse(uid));
+            if (user is null)
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.not_logged"
+                    }
+                }) {StatusCode = 401};
+            }
+
+            #endregion
+
+            var profile = user.Profiles.FirstOrDefault(p => p.Id == profileId);
+            if (profile is null)
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.profile_not_exists"
+                    }
+                }) {StatusCode = 403};
+            }
+
+            var cape = Db.Capes.FirstOrDefault(c => c.Id == capeId);
+            if (cape is null)
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.cape_not_exists"
+                    }
+                }) {StatusCode = 403};
+            }
+
+            #region Do attach cape.
+
+            profile.Cape = cape;
+            Db.SaveChanges();
+
+            #endregion
+
+            return NoContent();
+        }
+        
+        
+        [HttpDelete]
+        [Route("[action]/{profileId}")]
+        public IActionResult Cape([FromRoute] Guid profileId)
+        {
+            #region Check sessions.
+
+            var uid = HttpContext.Session.GetString(AuthController.SessionKey);
+            if (string.IsNullOrWhiteSpace(uid))
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.not_logged"
+                    }
+                }) {StatusCode = 401};
+            }
+            var user = Db.Users.FirstOrDefault(u => u.Id == Guid.Parse(uid));
+            if (user is null)
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.not_logged"
+                    }
+                }) {StatusCode = 401};
+            }
+
+            #endregion
+
+            var profile = user.Profiles.FirstOrDefault(p => p.Id == profileId);
+            if (profile is null)
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.profile_not_exists"
+                    }
+                }) {StatusCode = 403};
+            }
+
+            #region Do delete cape.
+
+            profile.Cape = null;
+            Db.SaveChanges();
+
+            #endregion
+
+            return NoContent();
+        }
+
+
+        [HttpDelete]
+        [Route("[action]/{profileId}")]
+        public IActionResult Manage([FromRoute] Guid profileId)
+        {
+            #region Check sessions.
+
+            var uid = HttpContext.Session.GetString(AuthController.SessionKey);
+            if (string.IsNullOrWhiteSpace(uid))
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.not_logged"
+                    }
+                }) {StatusCode = 401};
+            }
+            var user = Db.Users.FirstOrDefault(u => u.Id == Guid.Parse(uid));
+            if (user is null)
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.not_logged"
+                    }
+                }) {StatusCode = 401};
+            }
+
+            #endregion
+
+            #region Do delete profile.
+
+            var profile = user.Profiles.FirstOrDefault(p => p.Id == profileId);
+            if (profile is null)
+            {
+                return new JsonResult(new ErrorViewModel
+                {
+                    Message = new()
+                    {
+                        Message = "message.error.profile_not_exists"
+                    }
+                });
+            }
+
+            #endregion
+
+            return NoContent();
         }
 
         [HttpGet]

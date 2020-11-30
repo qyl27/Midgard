@@ -75,12 +75,14 @@ namespace Midgard.DbModels
             
             builder.Entity<Skin>().HasComment("皮肤信息表");
             builder.Entity<Skin>().Property(s => s.Id).HasComment("皮肤ID");
+            builder.Entity<Skin>().Property(s => s.Name).HasComment("皮肤名");
             builder.Entity<Skin>().Property(s => s.Model).HasComment("皮肤模型");
             builder.Entity<Skin>().Property(s => s.Url).HasComment("皮肤地址");
             
             builder.Entity<Cape>().HasComment("披风信息表");
-            builder.Entity<Cape>().Property(s => s.Id).HasComment("披风ID");
-            builder.Entity<Cape>().Property(s => s.Url).HasComment("披风地址");
+            builder.Entity<Cape>().Property(c => c.Id).HasComment("披风ID");
+            builder.Entity<Cape>().Property(c => c.Name).HasComment("披风名");
+            builder.Entity<Cape>().Property(c => c.Url).HasComment("披风地址");
         }
     }
 }
