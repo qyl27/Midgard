@@ -46,8 +46,9 @@ namespace Midgard.Utilities
             }
 
             var bytes = Encoding.UTF8.GetBytes(str);
-            var signedData = Program.RsaKey.SignData(bytes, 0, bytes.Length, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+            var signedData = Program.RsaKey.SignData(bytes, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
             return Convert.ToBase64String(signedData);
+            
         }
 
         private static string InternalLoad()

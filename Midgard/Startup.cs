@@ -1,12 +1,15 @@
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Midgard.DbModels;
@@ -116,10 +119,19 @@ namespace Midgard
             using var dbContext = app.ApplicationServices.CreateScope()
                 .ServiceProvider.GetRequiredService<MidgardContext>();
             dbContext.Database.EnsureCreated();
-            
+
+            // Front-end service.
             app.UseStaticFiles();
-            
             app.UseDefaultFiles();
+            
+            // Skin service.
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "skins")), 
+                RequestPath = "/skins", 
+                DefaultContentType = "image/png", 
+                ServeUnknownFileTypes = true
+            });
             
             app.UseSession();
             

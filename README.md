@@ -11,5 +11,5 @@
 
 ## 食用方法？
 
-安装 .Net 5 后运行它（`dotnet Midgard.dll`或者直接双击`Midgard.exe`），然后访问 http://localhost:35172/ 。
+安装 .Net 5 后，修改配置文件中的选项，运行它（`dotnet Midgard.dll`或者直接双击`Midgard.exe`），然后访问你设置的端口。
 

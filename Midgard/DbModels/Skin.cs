@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Midgard.Enumerates;
 
 namespace Midgard.DbModels
@@ -8,6 +9,7 @@ namespace Midgard.DbModels
     {
         [Key]
         [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
         
         [Required]

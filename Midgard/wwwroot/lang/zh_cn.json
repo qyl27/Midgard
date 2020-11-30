@@ -1,6 +1,6 @@
 ﻿{ 
-  "message.fatal.recaptcha_failed": "验证码校验失败！",
-  "message.fatal.username_or_email_exists": "用户名或邮箱已被注册！",
+  "message.error.recaptcha_failed": "验证码校验失败！",
+  "message.error.username_or_email_exists": "用户名或邮箱已被注册！",
   "message.error.user_exists": "用户名已被注册。",
   "message.error.email_exists": "邮箱已被注册。",
   "message.error.user_not_exists": "用户不存在。",
@@ -12,5 +12,7 @@
   "message.error.profile_not_exists": "角色不存在。",
   "message.error.skin_not_exists": "皮肤不存在。",
   "message.error.cape_not_exists": "披风不存在。",
-  "message.error.texture_too_big": "上传的材质太大了。"
+  "message.error.texture_too_big": "上传的材质太大了。",
+  "message.error.texture_illegal": "图像的宽高不是64*32或者64*64的整数倍。",
+  "message.error.bomb_detected": "Ha Boom!"
 }

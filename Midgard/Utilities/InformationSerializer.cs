@@ -5,6 +5,7 @@ using Midgard.DbModels;
 using Midgard.Enumerates;
 using Midgard.SharedModels;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Midgard.Utilities
 {
@@ -39,7 +40,14 @@ namespace Midgard.Utilities
             if (skin != null || cape != null)
             {
                 var texture = TextureSerializer(profile, skin, cape);
-                var json = JsonConvert.SerializeObject(texture);
+                var json = JsonConvert.SerializeObject(texture, new JsonSerializerSettings()
+                {
+                    NullValueHandling = NullValueHandling.Ignore, 
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy()
+                    }
+                });
                 var bytes = Encoding.UTF8.GetBytes(json);
                 var base64 = Convert.ToBase64String(bytes);
                 
@@ -47,7 +55,7 @@ namespace Midgard.Utilities
                 {
                     Name = "textures",
                     Value = base64,
-                    Signature = sign ? Signature.Sign(json) : null
+                    Signature = sign ? Signature.Sign(base64) : null
                 });
             }
 

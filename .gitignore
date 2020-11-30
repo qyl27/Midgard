@@ -345,3 +345,6 @@ logs/
 # Private Settings
 .settings/
 *.Development.*
+
+# Midgard
+skins/

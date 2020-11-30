@@ -48,5 +48,7 @@ namespace Midgard.DbModels
         public virtual List<Token> Tokens { get; set; }
         
         public virtual List<Skin> Skins { get; set; }
+        
+        public virtual List<Cape> Capes { get; set; }
     }
 }

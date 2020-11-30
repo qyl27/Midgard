@@ -59,7 +59,7 @@ namespace Midgard.Controllers.Api
             //     {
             //         Message = new()
             //         {
-            //             Message = "message.fatal.recaptcha_failed"
+            //             Message = "message.error.recaptcha_failed"
             //         }
             //     }) {StatusCode = 403};
             // }
@@ -71,7 +71,7 @@ namespace Midgard.Controllers.Api
                 {
                     Message = new()
                     {
-                        Message = "message.fatal.username_or_email_exists"
+                        Message = "message.error.username_or_email_exists"
                     }
                 }) {StatusCode = 403};
             }
@@ -130,7 +130,7 @@ namespace Midgard.Controllers.Api
             //     {
             //         Message = new()
             //         {
-            //             Message = "message.fatal.recaptcha_failed"
+            //             Message = "message.error.recaptcha_failed"
             //         }
             //     }) {StatusCode = 403};
             // }

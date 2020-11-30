@@ -38,9 +38,6 @@ namespace Midgard.DbModels
             builder.Entity<User>()
                 .HasMany(u => u.Tokens)
                 .WithOne(t => t.BindUser);
-            builder.Entity<User>()
-                .HasMany(u => u.Skins)
-                .WithOne(s => s.Owner);
 
             builder.Entity<Profile>().HasComment("角色信息表");
             builder.Entity<Profile>().Property(p => p.Id).HasComment("角色ID");
@@ -78,11 +75,17 @@ namespace Midgard.DbModels
             builder.Entity<Skin>().Property(s => s.Name).HasComment("皮肤名");
             builder.Entity<Skin>().Property(s => s.Model).HasComment("皮肤模型");
             builder.Entity<Skin>().Property(s => s.Url).HasComment("皮肤地址");
+            builder.Entity<Skin>()
+                .HasOne(s => s.Owner)
+                .WithMany(u => u.Skins);
             
             builder.Entity<Cape>().HasComment("披风信息表");
             builder.Entity<Cape>().Property(c => c.Id).HasComment("披风ID");
             builder.Entity<Cape>().Property(c => c.Name).HasComment("披风名");
             builder.Entity<Cape>().Property(c => c.Url).HasComment("披风地址");
+            builder.Entity<Cape>()
+                .HasOne(c => c.Owner)
+                .WithMany(u => u.Capes);
         }
     }
 }

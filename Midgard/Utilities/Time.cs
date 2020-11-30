@@ -9,6 +9,12 @@ namespace Midgard.Utilities
             TimeSpan ts = time.ToUniversalTime() - new DateTime(1970, 1, 1);
             return (long)ts.TotalSeconds;
         }
+        
+        public static long GetTimeStamp13(DateTime time)
+        {
+            TimeSpan ts = time.ToUniversalTime() - new DateTime(1970, 1, 1);
+            return (long)ts.TotalMilliseconds;
+        }
 
         public static string GetSaltByTime(DateTime time)
         {

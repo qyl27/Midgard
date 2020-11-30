@@ -186,25 +186,30 @@ namespace Midgard.Controllers.Yggdrasil
             {
                 result.User = InformationSerializer.UserSerializer(token.BindUser);
             }
+
+            Profile profile = null;
+            if (model.SelectedProfile is not null)
+            {
+                result.SelectedProfile = model.SelectedProfile;
+
+                var guidParseResult = Guid.TryParse(model.SelectedProfile.Id, out var profileId);
+                if (!guidParseResult)
+                {
+                    return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                        "Invalid token.")) { StatusCode = 403 };
+                }
+                profile = (from p in Db.Profiles
+                    where p.Id == profileId
+                    select p).FirstOrDefault();
+                if (profile is null)
+                {
+                    return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
+                        "Invalid token.")) { StatusCode = 403 };
+                }
+
+                profile.IsSelected = true;
+            }
             
-            result.SelectedProfile = model.SelectedProfile;
-
-            var guidParseResult = Guid.TryParse(model.SelectedProfile.Id, out var profileId);
-            if (!guidParseResult)
-            {
-                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
-                    "Invalid token.")) { StatusCode = 403 };
-            }
-            var profile = (from p in Db.Profiles
-                where p.Id == profileId
-                select p).FirstOrDefault();
-            if (profile is null)
-            {
-                return new JsonResult(new ErrorViewModel("ForbiddenOperationException", 
-                    "Invalid token.")) { StatusCode = 403 };
-            }
-
-            profile.IsSelected = true;
 
             var tokenExpireDays = Config.GetSection("Yggdrasil:Security:TokenExpireDays").Get<int>();
             Db.Tokens.Add(new Token()

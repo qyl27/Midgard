@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +39,19 @@ namespace Midgard
                 logger.Info("Loading RSA key pair. Please wait...");
                 Signature.Load();
             }
+
+            var dir = Directory.GetCurrentDirectory();
+            var skinsDir = Path.Combine(dir, "wwwroot", "skins");
+            var skinsTempDir = Path.Combine(dir, "wwwroot", "skins", "temp");
+            if (!Directory.Exists(skinsDir))
+            {
+                Directory.CreateDirectory(skinsDir);
+            }
+            if (!Directory.Exists(skinsTempDir))
+            {
+                Directory.CreateDirectory(skinsTempDir);
+            }
+
             
             CreateHostBuilder(args).Build().Run();
 
